@@ -55,10 +55,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu libminiupnpc-dev:arm64
 
-      - name: Install dependencies (macOS)
-        if: matrix.os == 'macos-latest'
+      - name: Install dependencies (macOS arm64)
+        if: matrix.os == 'macos-latest' && matrix.arch == 'arm64'
         run: |
           brew install miniupnpc
+
+      - name: Install dependencies (macOS x86_64)
+        if: matrix.os == 'macos-latest' && matrix.arch == 'x86_64'
+        run: |
+          softwareupdate --install-rosetta --agree-to-license || true
+          arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          arch -x86_64 /usr/local/bin/brew install miniupnpc
+          echo "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig" >> "$GITHUB_ENV"
+          echo "/usr/local/bin" >> "$GITHUB_PATH"
 
       - name: Build (x86_64 Linux)
         if: matrix.target == 'x86_64-unknown-linux-gnu'

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Al Biheiri <al@forgottheaddress.com>
+ * SPDX-License-Identifier: MIT
+ */
+
 #define _POSIX_C_SOURCE 200809L
 #include "update.h"
 #include <ctype.h>

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Al Biheiri <al@forgottheaddress.com>
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef UPDATE_H
 #define UPDATE_H
 

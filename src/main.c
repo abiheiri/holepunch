@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Al Biheiri <al@forgottheaddress.com>
+ * SPDX-License-Identifier: MIT
+ */
+
 #define _POSIX_C_SOURCE 200809L
 #include "upnp.h"
 #include "update.h"
@@ -97,6 +102,7 @@ static void print_usage(const char *prog)
     printf("  -local-ip Override auto-detected LAN IP\n");
     printf("  -verbose  Print detailed UPnP logs\n");
     printf("  --version Print version information\n");
+    printf("  --list    List current UPnP port mappings\n");
     printf("  --update  Update to the latest release\n");
 }
 
@@ -143,6 +149,7 @@ int main(int argc, char **argv)
     const char *local_ip_override = NULL;
     int verbose = 0;
     int do_update = 0;
+    int do_list = 0;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
@@ -153,6 +160,8 @@ int main(int argc, char **argv)
             return 0;
         } else if (strcmp(argv[i], "--update") == 0) {
             do_update = 1;
+        } else if (strcmp(argv[i], "--list") == 0) {
+            do_list = 1;
         } else if (strcmp(argv[i], "-sport") == 0) {
             if (++i >= argc) { fprintf(stderr, "Missing value for -sport\n"); return 2; }
             local_port = atoi(argv[i]);
@@ -196,6 +205,15 @@ int main(int argc, char **argv)
         int rc = self_update(version, target ? target : "unknown");
         free(target);
         return rc;
+    }
+
+    if (do_list) {
+        upnp_ctx_t ctx = {0};
+        ctx.verbose = verbose;
+        if (upnp_discover(&ctx) != 0) return 3;
+        upnp_list_mappings(&ctx);
+        upnp_cleanup(&ctx);
+        return 0;
     }
 
     if (kill_mode) {
@@ -282,9 +300,9 @@ int main(int argc, char **argv)
         }
         bg_mode = 1;
         openlog("punch", LOG_PID, LOG_DAEMON);
-        freopen("/dev/null", "r", stdin);
-        freopen("/dev/null", "w", stdout);
-        freopen("/dev/null", "w", stderr);
+        if (freopen("/dev/null", "r", stdin) == NULL) { /* ignore */ }
+        if (freopen("/dev/null", "w", stdout) == NULL) { /* ignore */ }
+        if (freopen("/dev/null", "w", stderr) == NULL) { /* ignore */ }
     }
 
     write_pidfile(external_port, proto);

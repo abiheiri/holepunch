@@ -4,7 +4,7 @@ A command-line utility that uses UPnP to temporarily forward an external port on
 
 ## Building
 
-Requires [libminiupnpc](https://github.com/miniupnp/miniupnp) and a C11 compiler.
+Requires [libminiupnpc](https://github.com/miniupnp/miniupnp)
 
 ### macOS
 
@@ -51,14 +51,3 @@ punch --version
 # Self-update from GitHub releases
 punch --update
 ```
-
-## Releasing
-
-Push a git tag to trigger the GitHub Actions release workflow:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-The workflow builds binaries for Linux (x86_64, aarch64) and macOS (x86_64, arm64) and creates a GitHub release automatically.

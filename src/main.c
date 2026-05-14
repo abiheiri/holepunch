@@ -260,7 +260,8 @@ int main(int argc, char **argv)
                 ctx.external_ip);
     }
 
-    if (upnp_add_mapping(&ctx, local_port, external_port, "TCP", lease_duration) != 0) {
+    const char *map_proto = do_both ? "TCP" : proto;
+    if (upnp_add_mapping(&ctx, local_port, external_port, map_proto, lease_duration) != 0) {
         upnp_cleanup(&ctx);
         return 4;
     }
@@ -323,7 +324,7 @@ int main(int argc, char **argv)
 
         int retries = 0;
         while (retries < 3) {
-            int ok = (upnp_add_mapping(&ctx, local_port, external_port, "TCP", lease_duration) == 0);
+            int ok = (upnp_add_mapping(&ctx, local_port, external_port, do_both ? "TCP" : proto, lease_duration) == 0);
             if (do_both) {
                 ok = ok && (upnp_add_mapping(&ctx, local_port, external_port, "UDP", lease_duration) == 0);
             }
@@ -344,7 +345,7 @@ int main(int argc, char **argv)
     }
 
     log_msg("Cleaning up port mapping...");
-    upnp_remove_mapping(&ctx, external_port, "TCP");
+    upnp_remove_mapping(&ctx, external_port, do_both ? "TCP" : proto);
     if (do_both) {
         upnp_remove_mapping(&ctx, external_port, "UDP");
     }

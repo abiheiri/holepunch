@@ -42,8 +42,9 @@ static char *shell_read(const char *cmd)
     while ((n = fread(buf, 1, sizeof(buf), fp)) > 0) {
         if (len + n + 1 > cap) {
             cap = cap ? cap * 2 : 65536;
-            out = realloc(out, cap);
-            if (!out) { pclose(fp); return NULL; }
+            char *tmp = realloc(out, cap);
+            if (!tmp) { free(out); pclose(fp); return NULL; }
+            out = tmp;
         }
         memcpy(out + len, buf, n);
         len += n;

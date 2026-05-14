@@ -56,7 +56,7 @@ int upnp_discover(upnp_ctx_t *ctx)
     return 0;
 }
 
-int upnp_add_mapping(upnp_ctx_t *ctx, int local_port, int external_port,
+int upnp_add_mapping(const upnp_ctx_t *ctx, int local_port, int external_port,
                      const char *proto, int lease_duration)
 {
     if (!ctx->discovered) return -1;
@@ -91,7 +91,7 @@ int upnp_add_mapping(upnp_ctx_t *ctx, int local_port, int external_port,
     return 0;
 }
 
-int upnp_remove_mapping(upnp_ctx_t *ctx, int external_port, const char *proto)
+int upnp_remove_mapping(const upnp_ctx_t *ctx, int external_port, const char *proto)
 {
     if (!ctx->discovered) return -1;
 
@@ -107,7 +107,7 @@ int upnp_remove_mapping(upnp_ctx_t *ctx, int external_port, const char *proto)
     return (r == UPNPCOMMAND_SUCCESS) ? 0 : -1;
 }
 
-void upnp_list_mappings(upnp_ctx_t *ctx)
+void upnp_list_mappings(const upnp_ctx_t *ctx)
 {
     if (!ctx->discovered) return;
 
